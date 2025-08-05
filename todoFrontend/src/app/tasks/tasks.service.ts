@@ -1,6 +1,6 @@
 import { effect, inject, Injectable, signal } from "@angular/core";
-import { NewTaskData, Task } from "./task/task.model";
 import { AuthService } from "../oauth.service";
+import { NewTaskData, Task } from "./task.model";
 
 @Injectable({providedIn: 'root'})
 export class TasksService {

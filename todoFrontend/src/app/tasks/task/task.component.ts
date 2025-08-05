@@ -1,8 +1,8 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { Task } from './task.model';
 import { EditTaskComponent } from '../edit-task/edit-task.component';
 import { TasksService } from '../tasks.service';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Task } from '../task.model';
 
 @Component({
   selector: 'app-task',
