@@ -29,9 +29,10 @@ public class TaskController {
     }
 
     @PutMapping("/task/{id}")
-    public ResponseEntity<String> editTask(@PathVariable int id, @RequestBody Task task) {
+    public ResponseEntity<Task> editTask(@PathVariable int id, @RequestBody Task task) {
         Task updatedTask = taskService.saveTask(task);
-        return new ResponseEntity<>("Updated", HttpStatus.OK);
+        return ResponseEntity.ok(updatedTask); // sends JSON with status 200
     }
+
 
 }
