@@ -16,7 +16,7 @@ export class EditTaskComponent {
     @Input({ required: true }) task!: Task;
 
     @Output() cancel = new EventEmitter<void>();
-    @Output() save = new EventEmitter<string>();
+    @Output() save = new EventEmitter<Task>();
 
     enteredTitle='';
     enteredSummary='';
@@ -32,11 +32,14 @@ export class EditTaskComponent {
     }
 
     onSave() {
-      this.tasksService.editTask(this.task.id, {
+      const updatedTask: Task = {
+        ...this.task,
         title: this.enteredTitle,
         summary: this.enteredSummary,
-        dueDate: this.enteredDate
-      })
+        dueDate: new Date(this.enteredDate).toISOString()
+      };
+
+  this.save.emit(updatedTask); // ✅ Emits a Task
       this.cancel.emit();
     }
 

@@ -2,7 +2,7 @@
     <app-edit-task 
         [task]="task" 
         (cancel)="onCancelEdit()"
-        (save)="onSaveEdit()"
+        (save)="onSaveEdit($event)"
     />
 }
 <article [ngClass]="{ 'completed' : task.status === 'COMPLETED' }">

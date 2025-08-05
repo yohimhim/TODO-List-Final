@@ -11,6 +11,9 @@
 
     
     <ul>
+        @if (error()) {
+            <p>{{ error() }}</p>
+        }
         @for (task of tasks(); track task.id) {
             <li>
                 <app-task

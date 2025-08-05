@@ -5,7 +5,7 @@ import { TasksService } from './tasks.service';
 import { AuthService } from '../oauth.service';
 import { Task } from './task.model';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 
 @Component({
@@ -17,40 +17,27 @@ import { JsonPipe } from '@angular/common';
 })
 export class TasksComponent implements OnInit{
   private taskService = inject(TasksService);
-  private authService = inject(AuthService);
-
+  isAddingTask = false;
   tasks = signal<Task[] | undefined>(undefined);
-  private httpClient = inject(HttpClient);
+  error = signal('');
   private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    const subscription = this.httpClient
-    .get< Task[] >('http://localhost:8080/tasks')
-    .subscribe({
+    const subscription = this.taskService.loadAvailableTasks().subscribe({
       next: (tasks) => {
         this.tasks.set(tasks);
         console.log(tasks);
       },
+      error: (error: Error) => {
+        this.error.set(error.message);
+      }
     });
     this.destroyRef.onDestroy(() => {
       subscription.unsubscribe();
     })
   }
 
-
-  isAddingTask = false;
-
-  tasks1 = this.taskService.getTasks;
-  userProfile = this.authService.userProfile;
-
-  userTasks = computed(() => {
-    const user = this.userProfile();
-    console.log(user);
-    if (!user) return [];
-
-    return this.tasks1().filter(task => task.userId === user.info.email);
-  });
-
+  
   onStartAddTask() {
     this.isAddingTask = true;
   }

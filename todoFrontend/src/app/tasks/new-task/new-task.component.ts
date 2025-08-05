@@ -1,6 +1,8 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TasksService } from '../tasks.service';
+import { AuthService } from '../../oauth.service';
+import { NewTaskData } from '../task.model';
 
 
 @Component({
@@ -18,14 +20,32 @@ export class NewTaskComponent {
     enteredSummary='';
     enteredDate='';
     private tasksService = inject(TasksService);
+    private authService = inject(AuthService);
 
     onSubmit() {
-      this.tasksService.addTask({
+      const user = this.authService.userProfile();
+
+      if (!user) {
+        console.error('User not logged in');
+        return;
+      }
+
+      const newTask: NewTaskData = {
         title: this.enteredTitle,
         summary: this.enteredSummary,
-        dueDate: this.enteredDate
-      })
-      this.cancel.emit();
+        dueDate: new Date(this.enteredDate).toISOString(),
+        completed: false,
+        userId: user.info.email 
+      };
+
+      this.tasksService.addTask(newTask).subscribe({
+        next: () => {
+          this.cancel.emit();
+        },
+        error: (err) => {
+          console.error('Failed to add task:', err);
+        }
+      });
     }
 
     onCancel() {

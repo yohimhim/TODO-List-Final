@@ -35,8 +35,15 @@ export class TaskComponent {
       this.isEditingTask = false;
     }
 
-    onSaveEdit() {
-      this.tasksService
-      this.isEditingTask = false;
+    onSaveEdit(updatedTask: Task) {
+      this.tasksService.editTask(updatedTask).subscribe({
+        next: () => {
+          this.isEditingTask = false;
+        },
+        error: (err) => {
+          console.error('Failed to update task:', err);
+        }
+
+      });
     }
 }
