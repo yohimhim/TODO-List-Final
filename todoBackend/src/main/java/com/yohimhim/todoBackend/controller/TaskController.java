@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,6 +26,12 @@ public class TaskController {
     public ResponseEntity<?> newTask(@RequestBody Task task) {
         Task savedTask = taskService.saveTask(task);
         return new ResponseEntity<>(savedTask, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/task/{id}")
+    public ResponseEntity<String> editTask(@PathVariable int id, @RequestBody Task task) {
+        Task updatedTask = taskService.saveTask(task);
+        return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
 }

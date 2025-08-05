@@ -19,6 +19,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String userId;
     private String title;
     private String summary;
     private Date dueDate;
