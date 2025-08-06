@@ -45,7 +45,7 @@ export class TasksService {
   //   });
   // }
   addTask(task: Task) {
-  return this.httpClient.post<Task>('http://localhost:8080/newTask', task)
+    return this.httpClient.post<Task>('http://localhost:8080/newTask', task)
     .pipe(
       tap((createdTask) => {
         this.tasks.update(prev => [...prev, createdTask]);
@@ -55,12 +55,26 @@ export class TasksService {
         return throwError(() => new Error('Could not create task'));
       })
     );
-}
+  }
 
 
   editTask(task: Task) {
-    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task);
+    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task)
+    .pipe(
+      tap((updatedTask) => {
+        this.tasks.update(prevTasks =>
+          prevTasks.map(t =>
+            t.id === updatedTask.id ? updatedTask : t
+          )
+        );
+      }),
+      catchError((error) => {
+        console.error('Failed to update task:', error);
+        return throwError(() => new Error('Could not update task'));
+      })
+    );
   }
+
 
   updateTaskStatus(taskId: string) {
     this.tasks.update(tasks => 
