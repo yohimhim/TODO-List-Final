@@ -33,17 +33,17 @@ export class TasksService {
   getTasks = this.tasks.asReadonly();
 
   removeTask(id: string) {
-    this.tasks.update(tasks => tasks.filter(task => task.id != id));
-    this.saveTasks();
+    return this.httpClient.delete(`http://localhost:8080/task/${id}`).pipe(
+    tap(() => {
+      this.tasks.update(tasks => tasks.filter(task => task.id?.toString() !== id));
+    }),
+    catchError((error) => {
+      console.error('Failed to delete task:', error);
+      return throwError(() => new Error('Could not delete task'));
+    })
+  );
   }
 
-  // addTask(task: Task) {
-  //   this.tasks.update(prevTasks => [...prevTasks, task])
-
-  //   return this.httpClient.post<Task>('http://localhost:8080/newTask', {
-  //     taskId: task.id
-  //   });
-  // }
   addTask(task: Task) {
     return this.httpClient.post<Task>('http://localhost:8080/newTask', task)
     .pipe(

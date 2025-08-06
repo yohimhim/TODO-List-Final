@@ -2,11 +2,6 @@ import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angula
 import { TaskComponent } from './task/task.component';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { TasksService } from './tasks.service';
-import { AuthService } from '../oauth.service';
-import { Task } from './task.model';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-tasks',
@@ -43,7 +38,14 @@ export class TasksComponent implements OnInit{
   }
   
   onDeleteTask(id: string) {
-    return this.taskService.removeTask(id);
+    this.taskService.removeTask(id).subscribe({
+      next: () => {
+        console.log('Task deleted successfully');
+      },
+      error: (err) => {
+        console.error('Delete failed:', err);
+      }
+    });  
   }
 
 }

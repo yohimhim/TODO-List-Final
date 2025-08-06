@@ -24,7 +24,7 @@ export class TaskComponent {
     // }
 
     onDeleteTask() {
-      this.delete.emit(this.task.id);
+      this.delete.emit(this.task.id?.toString());
     }
 
     onEditTask() {
