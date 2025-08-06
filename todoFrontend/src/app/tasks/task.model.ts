@@ -14,6 +14,6 @@ export interface NewTaskData {
   title: string;
   summary: string;
   dueDate: string;
-  completed?: boolean;
+  status?: TaskStatus;
   userId?: string;
 }

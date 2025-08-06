@@ -34,7 +34,7 @@ export class NewTaskComponent {
         title: this.enteredTitle,
         summary: this.enteredSummary,
         dueDate: new Date(this.enteredDate).toISOString(),
-        completed: false,
+        status: 'OPEN',
         userId: user.info.email 
       };
 

@@ -59,8 +59,7 @@ export class TasksService {
 
 
   editTask(task: Task) {
-    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task)
-    .pipe(
+    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task).pipe(
       tap((updatedTask) => {
         this.tasks.update(prevTasks =>
           prevTasks.map(t =>
@@ -74,7 +73,6 @@ export class TasksService {
       })
     );
   }
-
 
   updateTaskStatus(taskId: string) {
     this.tasks.update(tasks => 

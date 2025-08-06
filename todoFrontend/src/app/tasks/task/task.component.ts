@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { EditTaskComponent } from '../edit-task/edit-task.component';
 import { TasksService } from '../tasks.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Task } from '../task.model';
+import { Task, TaskStatus } from '../task.model';
 
 @Component({
   selector: 'app-task',
@@ -18,10 +18,21 @@ export class TaskComponent {
     isEditingTask = false;
 
     private tasksService = inject(TasksService);
-    // onCompleteTask() {
-    //   this.tasksService.updateTaskStatus(this.task.id);
-    //   console.log(this.task.status);
-    // }
+
+    onCompleteTask() {
+      const updatedTask = {
+        ...this.task,
+        status: this.task.status === 'COMPLETED' ? 'OPEN' : 'COMPLETED' as TaskStatus
+      };
+            console.log(this.task.status);
+
+
+      this.tasksService.editTask(updatedTask).subscribe({
+        error: (err) => {
+          console.error('Failed to complete task:', err);
+        }
+      });
+    }
 
     onDeleteTask() {
       this.delete.emit(this.task.id?.toString());
