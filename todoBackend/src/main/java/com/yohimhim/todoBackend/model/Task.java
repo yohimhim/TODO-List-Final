@@ -23,5 +23,5 @@ public class Task {
     private String title;
     private String summary;
     private Date dueDate;
-    private String completed;
+    private String status;
 }
