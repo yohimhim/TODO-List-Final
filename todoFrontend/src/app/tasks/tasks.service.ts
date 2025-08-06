@@ -2,7 +2,7 @@ import { DestroyRef, effect, inject, Injectable, signal } from "@angular/core";
 import { AuthService } from "../oauth.service";
 import { NewTaskData, Task } from "./task.model";
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, map, tap, throwError } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class TasksService {
@@ -10,6 +10,8 @@ export class TasksService {
   private tasks = signal<Task[]>([]);
   private httpClient = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
+
+  loadedTasks = this.tasks.asReadonly();
 
   constructor() {
     const localTasks = localStorage.getItem('tasks'); //loads previous tasks stored in localStorage
@@ -35,12 +37,29 @@ export class TasksService {
     this.saveTasks();
   }
 
-  addTask(task: NewTaskData) {
-    return this.httpClient.post<Task>('http://localhost:8080/newTask', task);
-  }
+  // addTask(task: Task) {
+  //   this.tasks.update(prevTasks => [...prevTasks, task])
+
+  //   return this.httpClient.post<Task>('http://localhost:8080/newTask', {
+  //     taskId: task.id
+  //   });
+  // }
+  addTask(task: Task) {
+  return this.httpClient.post<Task>('http://localhost:8080/newTask', task)
+    .pipe(
+      tap((createdTask) => {
+        this.tasks.update(prev => [...prev, createdTask]);
+      }),
+      catchError((error) => {
+        console.error('Failed to add task:', error);
+        return throwError(() => new Error('Could not create task'));
+      })
+    );
+}
+
 
   editTask(task: Task) {
-    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task)
+    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task);
   }
 
   updateTaskStatus(taskId: string) {
@@ -60,7 +79,11 @@ export class TasksService {
   }
 
   loadAvailableTasks() {
-    return this.fetchTasks('http://localhost:8080/tasks', 'Something went wrong fetching your tasks...');
+    return this.fetchTasks('http://localhost:8080/tasks', 'Something went wrong fetching your tasks...')
+    .pipe(tap({
+      next: (tasks) => this.tasks.set(tasks)
+    }))
+    ;
   }
 
   private fetchTasks(url: string, errorMessage: string) {

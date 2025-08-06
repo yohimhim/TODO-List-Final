@@ -1,15 +1,16 @@
 export type TaskStatus = 'OPEN' | 'COMPLETED';
 
 export interface Task {
-  id: string;
+  id?: string;
   title: string;
   summary: string;
   dueDate: string;
   status?: TaskStatus;
-  userId: string;
+  userId?: string;
 }
 
 export interface NewTaskData {
+  id?: string;
   title: string;
   summary: string;
   dueDate: string;

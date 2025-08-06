@@ -18,16 +18,12 @@ import { JsonPipe } from '@angular/common';
 export class TasksComponent implements OnInit{
   private taskService = inject(TasksService);
   isAddingTask = false;
-  tasks = signal<Task[] | undefined>(undefined);
   error = signal('');
   private destroyRef = inject(DestroyRef);
+  tasks = this.taskService.loadedTasks;
 
   ngOnInit() {
     const subscription = this.taskService.loadAvailableTasks().subscribe({
-      next: (tasks) => {
-        this.tasks.set(tasks);
-        console.log(tasks);
-      },
       error: (error: Error) => {
         this.error.set(error.message);
       }

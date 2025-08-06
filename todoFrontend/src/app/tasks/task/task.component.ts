@@ -18,10 +18,10 @@ export class TaskComponent {
     isEditingTask = false;
 
     private tasksService = inject(TasksService);
-    onCompleteTask() {
-      this.tasksService.updateTaskStatus(this.task.id);
-      console.log(this.task.status);
-    }
+    // onCompleteTask() {
+    //   this.tasksService.updateTaskStatus(this.task.id);
+    //   console.log(this.task.status);
+    // }
 
     onDeleteTask() {
       this.delete.emit(this.task.id);

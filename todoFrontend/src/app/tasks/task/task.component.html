@@ -12,7 +12,7 @@
     <div class="actionButtons">
         <button (click)="onEditTask()">Edit</button>
         <button (click)="onDeleteTask()">Delete</button>
-        <button (click)="onCompleteTask()">
+        <button>
             {{ task.status === 'COMPLETED' ? 'Undo' : 'Complete' }}
         </button>
     </div>
