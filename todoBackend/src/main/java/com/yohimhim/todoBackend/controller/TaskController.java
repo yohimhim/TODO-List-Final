@@ -32,14 +32,14 @@ public class TaskController {
     @PutMapping("/task/{id}")
     public ResponseEntity<Task> editTask(@PathVariable int id, @RequestBody Task task) {
         Task updatedTask = taskService.saveTask(task);
-        return ResponseEntity.ok(updatedTask); // sends JSON with status 200
+        return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/task/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable int id) {
         try {
             taskService.deleteTask(id);
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found.");
         } catch (Exception e) {

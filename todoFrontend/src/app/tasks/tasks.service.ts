@@ -14,19 +14,6 @@ export class TasksService {
   loadedTasks = this.tasks.asReadonly();
 
   constructor() {
-    const localTasks = localStorage.getItem('tasks'); //loads previous tasks stored in localStorage
-
-    if (localTasks) {
-      try {
-        this.tasks.set(JSON.parse(localTasks));
-      } catch (err) {
-        console.log('cannot parse from local storage...');
-      }
-    }
-
-    effect(() => {
-      localStorage.setItem('tasks', JSON.stringify(this.tasks())); //saves task to localStorage as JSON string
-    });
 
   }
 
@@ -83,12 +70,9 @@ export class TasksService {
         } : task 
       )
     );
-    this.saveTasks();
   }
 
-  private saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(this.tasks()));
-  }
+
 
   loadAvailableTasks() {
     return this.fetchTasks('http://localhost:8080/tasks', 'Something went wrong fetching your tasks...')
