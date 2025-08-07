@@ -35,6 +35,7 @@ export class AuthService {
           oAuthService.initLoginFlow();
         } else {
           oAuthService.loadUserProfile().then( (userProfile) => {
+            console.log(JSON.stringify(userProfile));
             console.log('Loaded user: ' + userProfile);
             this.user.set(userProfile as UserInfo);
 
@@ -42,5 +43,13 @@ export class AuthService {
         }
       });
     });
+  }
+
+  get accessToken(): string {
+    return this.oAuthService.getAccessToken();
+  }
+
+  get idToken(): string {
+    return this.oAuthService.getIdToken();
   }
 }

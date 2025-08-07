@@ -20,20 +20,26 @@ export class TasksService {
   getTasks = this.tasks.asReadonly();
 
   removeTask(id: string) {
-    return this.httpClient.delete(`http://localhost:8080/task/${id}`).pipe(
-    tap(() => {
-      this.tasks.update(tasks => tasks.filter(task => task.id?.toString() !== id));
-    }),
-    catchError((error) => {
-      console.error('Failed to delete task:', error);
-      return throwError(() => new Error('Could not delete task'));
-    })
-  );
+    return this.httpClient.delete(
+      `http://localhost:8080/task/${id}`, 
+      this.getAuthHeaders()
+    ).pipe(
+      tap(() => {
+        this.tasks.update(tasks => tasks.filter(task => task.id?.toString() !== id));
+      }),
+      catchError((error) => {
+        console.error('Failed to delete task:', error);
+        return throwError(() => new Error('Could not delete task'));
+      })
+    );
   }
 
   addTask(task: Task) {
-    return this.httpClient.post<Task>('http://localhost:8080/newTask', task)
-    .pipe(
+    return this.httpClient.post<Task>(
+      'http://localhost:8080/newTask', 
+      task,
+      this.getAuthHeaders()
+    ).pipe(
       tap((createdTask) => {
         this.tasks.update(prev => [...prev, createdTask]);
       }),
@@ -46,7 +52,11 @@ export class TasksService {
 
 
   editTask(task: Task) {
-    return this.httpClient.put<Task>(`http://localhost:8080/task/${task.id}`, task).pipe(
+    return this.httpClient.put<Task>(
+      `http://localhost:8080/task/${task.id}`, 
+      task,
+      this.getAuthHeaders()
+    ).pipe(
       tap((updatedTask) => {
         this.tasks.update(prevTasks =>
           prevTasks.map(t =>
@@ -60,19 +70,6 @@ export class TasksService {
       })
     );
   }
-
-  updateTaskStatus(taskId: string) {
-    this.tasks.update(tasks => 
-      tasks.map(task =>
-        task.id === taskId ? { 
-          ...task,
-          status: task.status === 'COMPLETED' ? 'OPEN' : 'COMPLETED'
-        } : task 
-      )
-    );
-  }
-
-
 
   loadAvailableTasks() {
     return this.fetchTasks('http://localhost:8080/tasks', 'Something went wrong fetching your tasks...')
@@ -94,6 +91,15 @@ export class TasksService {
         );
       })
     )
+  }
+
+  private getAuthHeaders() {
+    const token = this.authService.accessToken;
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+    console.log('Auth Headers:', headers); // 👈 Log here
+    return { headers };
   }
 
 }
