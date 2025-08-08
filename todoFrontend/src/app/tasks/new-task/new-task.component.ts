@@ -35,10 +35,10 @@ export class NewTaskComponent {
         summary: this.enteredSummary,
         dueDate: new Date(this.enteredDate).toISOString(),
         status: 'OPEN',
-        userId: user.info.email 
+        userId: user.info.sub 
       };
 
-      this.tasksService.addTask(newTask).subscribe({
+      this.tasksService.addTask(newTask)?.subscribe({
         next: () => {
           this.cancel.emit();
         },

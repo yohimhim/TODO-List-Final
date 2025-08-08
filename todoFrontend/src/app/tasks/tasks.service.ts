@@ -34,21 +34,31 @@ export class TasksService {
     );
   }
 
-  addTask(task: Task) {
-    return this.httpClient.post<Task>(
-      'http://localhost:8080/newTask', 
-      task,
-      this.getAuthHeaders()
-    ).pipe(
-      tap((createdTask) => {
-        this.tasks.update(prev => [...prev, createdTask]);
-      }),
-      catchError((error) => {
-        console.error('Failed to add task:', error);
-        return throwError(() => new Error('Could not create task'));
-      })
-    );
-  }
+  addTask(taskData: NewTaskData) {
+  const user = this.authService.userProfile();
+
+  if (!user) return;
+
+  const newTask: Task = {
+    ...taskData,
+    userId: user.info.sub 
+  };
+
+  return this.httpClient.post<Task>(
+    'http://localhost:8080/newTask',
+    newTask,
+    this.getAuthHeaders()
+  ).pipe(
+    tap((createdTask) => {
+      this.tasks.update(prev => [...prev, createdTask]);
+    }),
+    catchError((error) => {
+      console.error('Failed to add task:', error);
+      return throwError(() => new Error('Could not create task'));
+    })
+  );
+}
+
 
 
   editTask(task: Task) {
@@ -80,26 +90,25 @@ export class TasksService {
   }
 
   private fetchTasks(url: string, errorMessage: string) {
-    return this.httpClient
-    .get< Task[] >(url)
+  return this.httpClient
+    .get<Task[]>(url, this.getAuthHeaders()) 
     .pipe(
       catchError((error) => {
         console.log(error);
-        return throwError(
-          () => 
-            new Error(errorMessage)
-        );
+        return throwError(() => new Error(errorMessage));
       })
-    )
+    );
   }
 
+
   private getAuthHeaders() {
-    const token = this.authService.accessToken;
-    const headers = {
+  const token = this.authService.idToken; 
+  console.log('Using ID Token in header:', token);
+  return {
+    headers: {
       Authorization: `Bearer ${token}`
-    };
-    console.log('Auth Headers:', headers); // 👈 Log here
-    return { headers };
-  }
+    }
+  };
+}
 
 }

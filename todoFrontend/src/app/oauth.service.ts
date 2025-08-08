@@ -34,6 +34,13 @@ export class AuthService {
         if(!oAuthService.hasValidAccessToken()) {
           oAuthService.initLoginFlow();
         } else {
+
+        const accessToken = oAuthService.getAccessToken();
+        localStorage.setItem('access_token', accessToken);
+
+        const idToken = oAuthService.getIdToken();
+        localStorage.setItem('id_token', idToken);
+
           oAuthService.loadUserProfile().then( (userProfile) => {
             console.log(JSON.stringify(userProfile));
             console.log('Loaded user: ' + userProfile);
