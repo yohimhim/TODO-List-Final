@@ -24,4 +24,8 @@ public class TaskService {
     public void deleteTask(int id) {
         taskRepo.deleteById(id);
     }
+
+    public List<Task> getTasksByUserId(String userId) {
+        return taskRepo.findByUserId(userId);
+    }
 }
