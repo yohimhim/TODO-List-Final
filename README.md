@@ -73,7 +73,7 @@ Make sure you:
 ```bash
 cd frontend
 npm install
-ng serve
+npm start
 ```
 
 Update `authConfig` in your Angular service with your **Google OAuth client ID**.
