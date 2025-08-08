@@ -91,12 +91,6 @@ Update `authConfig` in your Angular service with your **Google OAuth client ID**
 
 ---
 
-## ✍️ Author
-
-- Marcus Yeung
-
----
-
 ## 📌 Notes
 
 - Only the authenticated user can see their own tasks.
